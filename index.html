@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextMove — Decision Journal</title>
+    <meta name="description" content="Track your decisions, learn from outcomes, and make better choices over time.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+        
+        .app {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .tagline {
+            color: var(--gray-500);
+            font-size: 1.1rem;
+        }
+        
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+            background: white;
+            padding: 8px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--gray-500);
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            background: var(--gray-100);
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            color: var(--gray-900);
+        }
+        
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--gray-700);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* Confidence Slider */
+        .confidence-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .confidence-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--gray-200);
+        }
+        
+        .confidence-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+        
+        .confidence-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        /* Button */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        /* Decision List */
+        .decision-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .decision-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .decision-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .decision-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .decision-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--gray-900);
+        }
+        
+        .decision-date {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+        
+        .decision-preview {
+            color: var(--gray-500);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+        
+        .decision-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.85rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--gray-500);
+        }
+        
+        .confidence-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .confidence-high { background: #dcfce7; color: #166534; }
+        .confidence-medium { background: #fef3c7; color: #92400e; }
+        .confidence-low { background: #fee2e2; color: #991b1b; }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        
+        .status-pending { background: var(--gray-100); color: var(--gray-700); }
+        .status-good { background: #dcfce7; color: #166534; }
+        .status-bad { background: #fee2e2; color: #991b1b; }
+        .status-mixed { background: #fef3c7; color: #92400e; }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-500);
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.25rem;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+        
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-500);
+        }
+        
+        /* Section */
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        /* Follow-up date */
+        .followup-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .followup-group input {
+            flex: 1;
+        }
+        
+        /* Decision Detail */
+        .detail-section {
+            margin-bottom: 24px;
+        }
+        
+        .detail-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+        
+        .detail-content {
+            color: var(--gray-700);
+            line-height: 1.7;
+        }
+        
+        .outcome-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .outcome-buttons .btn {
+            flex: 1;
+        }
+        
+        /* Insights */
+        .insight-card {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .insight-card h3 {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .insight-card p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .outcome-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <div class="logo">NextMove</div>
+            <p class="tagline">Track decisions. Learn from outcomes. Decide better.</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showSection('new')">+ New Decision</button>
+            <button class="tab" onclick="showSection('history')">📋 History</button>
+            <button class="tab" onclick="showSection('insights')">💡 Insights</button>
+        </div>
+        
+        <!-- New Decision Section -->
+        <div id="new" class="section active">
+            <div class="card">
+                <h2>Log a Decision</h2>
+                <form id="decisionForm">
+                    <div class="form-group">
+                        <label for="title">What decision are you making?</label>
+                        <input type="text" id="title" placeholder="e.g., Hire a marketing contractor" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="context">What's the context?</label>
+                        <textarea id="context" placeholder="What led to this decision? What problem are you solving?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reasoning">Why are you making this choice?</label>
+                        <textarea id="reasoning" placeholder="What factors influenced this decision? What alternatives did you consider?" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expected">What outcome do you expect?</label>
+                        <textarea id="expected" placeholder="What will success look like? What could go wrong?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>How confident are you? (1-10)</label>
+                        <div class="confidence-container">
+                            <input type="range" id="confidence" class="confidence-slider" min="1" max="10" value="5">
+                            <span class="confidence-value" id="confidenceValue">5</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category">
+                            <option value="business">💼 Business</option>
+                            <option value="career">🎯 Career</option>
+                            <option value="personal">🏠 Personal</option>
+                            <option value="financial">💰 Financial</option>
+                            <option value="health">🏃 Health</option>
+                            <option value="relationships">❤️ Relationships</option>
+                            <option value="other">📌 Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="followup">Follow-up date (to review outcome)</label>
+                        <input type="date" id="followup">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Save Decision</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- History Section -->
+        <div id="history" class="section">
+            <div class="decision-list" id="decisionList">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+        
+        <!-- Insights Section -->
+        <div id="insights" class="section">
+            <div class="stats-grid" id="statsGrid">
+                <!-- Populated by JS -->
+            </div>
+            
+            <div id="insightCards">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Decision Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Decision Details</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalContent">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Management
+        let decisions = JSON.parse(localStorage.getItem('nextmove_decisions') || '[]');
+        
+        function saveDecisions() {
+            localStorage.setItem('nextmove_decisions', JSON.stringify(decisions));
+        }
+        
+        // UI Functions
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (sectionId === 'history') renderHistory();
+            if (sectionId === 'insights') renderInsights();
+        }
+        
+        // Confidence slider
+        document.getElementById('confidence').addEventListener('input', function() {
+            document.getElementById('confidenceValue').textContent = this.value;
+        });
+        
+        // Form submission
+        document.getElementById('decisionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const decision = {
+                id: Date.now(),
+                title: document.getElementById('title').value,
+                context: document.getElementById('context').value,
+                reasoning: document.getElementById('reasoning').value,
+                expected: document.getElementById('expected').value,
+                confidence: parseInt(document.getElementById('confidence').value),
+                category: document.getElementById('category').value,
+                followup: document.getElementById('followup').value,
+                createdAt: new Date().toISOString(),
+                outcome: null,
+                outcomeNotes: null,
+                outcomeDate: null
+            };
+            
+            decisions.unshift(decision);
+            saveDecisions();
+            
+            // Reset form
+            this.reset();
+            document.getElementById('confidence').value = 5;
+            document.getElementById('confidenceValue').textContent = '5';
+            
+            // Show success
+            alert('Decision logged! 🎉');
+        });
+        
+        // Render History
+        function renderHistory() {
+            const container = document.getElementById('decisionList');
+            
+            if (decisions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <h3>No decisions yet</h3>
+                        <p>Start logging your decisions to track and learn from them.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = decisions.map(d => {
+                const date = new Date(d.createdAt).toLocaleDateString('en-US', { 
+                    month: 'short', day: 'numeric', year: 'numeric' 
+                });
+                
+                const confidenceClass = d.confidence >= 7 ? 'high' : d.confidence >= 4 ? 'medium' : 'low';
+                const statusClass = d.outcome === 'good' ? 'good' : d.outcome === 'bad' ? 'bad' : d.outcome === 'mixed' ? 'mixed' : 'pending';
+                const statusText = d.outcome ? d.outcome.charAt(0).toUpperCase() + d.outcome.slice(1) : 'Pending';
+                
+                const categoryEmoji = {
+                    business: '💼', career: '🎯', personal: '🏠', 
+                    financial: '💰', health: '🏃', relationships: '❤️', other: '📌'
+                };
+                
+                return `
+                    <div class="decision-item" onclick="showDecision(${d.id})">
+                        <div class="decision-header">
+                            <span class="decision-title">${d.title}</span>
+                            <span class="decision-date">${date}</span>
+                        </div>
+                        <p class="decision-preview">${d.reasoning.substring(0, 100)}${d.reasoning.length > 100 ? '...' : ''}</p>
+                        <div class="decision-meta">
+                            <span class="meta-item">${categoryEmoji[d.category] || '📌'} ${d.category}</span>
+                            <span class="confidence-badge confidence-${confidenceClass}">${d.confidence}/10 confident</span>
+                            <span class="status-badge status-${statusClass}">${statusText}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Show Decision Detail
+        function showDecision(id) {
+            const d = decisions.find(dec => dec.id === id);
+            if (!d) return;
+            
+            document.getElementById('modalTitle').textContent = d.title;
+            
+            const date = new Date(d.createdAt).toLocaleDateString('en-US', { 
+                month: 'long', day: 'numeric', year: 'numeric' 
+            });
+            
+            let outcomeHtml = '';
+            if (d.outcome) {
+                outcomeHtml = `
+                    <div class="detail-section">
+                        <div class="detail-label">Outcome</div>
+                        <div class="detail-content">
+                            <span class="status-badge status-${d.outcome}">${d.outcome.charAt(0).toUpperCase() + d.outcome.slice(1)}</span>
+                            ${d.outcomeNotes ? `<p style="margin-top: 12px">${d.outcomeNotes}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            } else {
+                outcomeHtml = `
+                    <div class="detail-section">
+                        <div class="detail-label">Record Outcome</div>
+                        <textarea id="outcomeNotes" placeholder="What happened? What did you learn?"></textarea>
+                        <div class="outcome-buttons">
+                            <button class="btn btn-success" onclick="recordOutcome(${id}, 'good')">👍 Good</button>
+                            <button class="btn btn-secondary" onclick="recordOutcome(${id}, 'mixed')">🤷 Mixed</button>
+                            <button class="btn btn-danger" onclick="recordOutcome(${id}, 'bad')">👎 Bad</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('modalContent').innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-label">Date</div>
+                    <div class="detail-content">${date}</div>
+                </div>
+                
+                ${d.context ? `
+                <div class="detail-section">
+                    <div class="detail-label">Context</div>
+                    <div class="detail-content">${d.context}</div>
+                </div>
+                ` : ''}
+                
+                <div class="detail-section">
+                    <div class="detail-label">Reasoning</div>
+                    <div class="detail-content">${d.reasoning}</div>
+                </div>
+                
+                ${d.expected ? `
+                <div class="detail-section">
+                    <div class="detail-label">Expected Outcome</div>
+                    <div class="detail-content">${d.expected}</div>
+                </div>
+                ` : ''}
+                
+                <div class="detail-section">
+                    <div class="detail-label">Confidence Level</div>
+                    <div class="detail-content">${d.confidence}/10</div>
+                </div>
+                
+                ${outcomeHtml}
+                
+                <button class="btn btn-secondary" onclick="deleteDecision(${id})" style="margin-top: 20px; width: 100%;">🗑️ Delete Decision</button>
+            `;
+            
+            document.getElementById('detailModal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+        
+        function recordOutcome(id, outcome) {
+            const decision = decisions.find(d => d.id === id);
+            if (!decision) return;
+            
+            decision.outcome = outcome;
+            decision.outcomeNotes = document.getElementById('outcomeNotes')?.value || '';
+            decision.outcomeDate = new Date().toISOString();
+            
+            saveDecisions();
+            closeModal();
+            renderHistory();
+        }
+        
+        function deleteDecision(id) {
+            if (!confirm('Delete this decision?')) return;
+            decisions = decisions.filter(d => d.id !== id);
+            saveDecisions();
+            closeModal();
+            renderHistory();
+        }
+        
+        // Render Insights
+        function renderInsights() {
+            const total = decisions.length;
+            const withOutcome = decisions.filter(d => d.outcome).length;
+            const goodOutcomes = decisions.filter(d => d.outcome === 'good').length;
+            const avgConfidence = total > 0 
+                ? (decisions.reduce((sum, d) => sum + d.confidence, 0) / total).toFixed(1)
+                : 0;
+            const accuracyRate = withOutcome > 0 
+                ? Math.round((goodOutcomes / withOutcome) * 100)
+                : 0;
+            
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${total}</div>
+                    <div class="stat-label">Total Decisions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${withOutcome}</div>
+                    <div class="stat-label">With Outcomes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${avgConfidence}</div>
+                    <div class="stat-label">Avg Confidence</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${accuracyRate}%</div>
+                    <div class="stat-label">Good Outcomes</div>
+                </div>
+            `;
+            
+            // Generate insights
+            let insights = [];
+            
+            if (total === 0) {
+                insights.push({
+                    title: '🚀 Get Started',
+                    text: 'Log your first decision to start building your decision history. Over time, you\'ll see patterns in how you make choices.'
+                });
+            } else {
+                if (total >= 5) {
+                    // Category analysis
+                    const categories = {};
+                    decisions.forEach(d => {
+                        categories[d.category] = (categories[d.category] || 0) + 1;
+                    });
+                    const topCategory = Object.entries(categories).sort((a, b) => b[1] - a[1])[0];
+                    insights.push({
+                        title: '📊 Decision Patterns',
+                        text: `Most of your decisions (${topCategory[1]} of ${total}) are in the ${topCategory[0]} category. Consider if you're giving enough attention to other areas.`
+                    });
+                }
+                
+                if (withOutcome >= 3) {
+                    // Confidence vs outcome correlation
+                    const highConfGood = decisions.filter(d => d.confidence >= 7 && d.outcome === 'good').length;
+                    const highConfTotal = decisions.filter(d => d.confidence >= 7 && d.outcome).length;
+                    const lowConfGood = decisions.filter(d => d.confidence < 7 && d.outcome === 'good').length;
+                    const lowConfTotal = decisions.filter(d => d.confidence < 7 && d.outcome).length;
+                    
+                    if (highConfTotal > 0 && lowConfTotal > 0) {
+                        const highConfRate = Math.round((highConfGood / highConfTotal) * 100);
+                        const lowConfRate = Math.round((lowConfGood / lowConfTotal) * 100);
+                        
+                        if (highConfRate > lowConfRate + 20) {
+                            insights.push({
+                                title: '🎯 Trust Your Gut',
+                                text: `When you\'re confident (7+), ${highConfRate}% of decisions turn out good vs ${lowConfRate}% when you\'re less sure. Your instincts seem calibrated!`
+                            });
+                        } else if (lowConfRate > highConfRate) {
+                            insights.push({
+                                title: '🤔 Confidence Calibration',
+                                text: `Interestingly, your lower-confidence decisions (${lowConfRate}% good) perform as well or better than high-confidence ones (${highConfRate}% good). You might be underestimating yourself.`
+                            });
+                        }
+                    }
+                }
+                
+                // Pending follow-ups
+                const pendingFollowups = decisions.filter(d => 
+                    !d.outcome && d.followup && new Date(d.followup) <= new Date()
+                ).length;
+                
+                if (pendingFollowups > 0) {
+                    insights.push({
+                        title: '⏰ Pending Reviews',
+                        text: `You have ${pendingFollowups} decision${pendingFollowups > 1 ? 's' : ''} past their follow-up date. Review them to complete the learning loop!`
+                    });
+                }
+            }
+            
+            document.getElementById('insightCards').innerHTML = insights.map(i => `
+                <div class="insight-card">
+                    <h3>${i.title}</h3>
+                    <p>${i.text}</p>
+                </div>
+            `).join('');
+        }
+        
+        // Close modal on overlay click
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        
+        // Set default follow-up date to 30 days from now
+        const followupInput = document.getElementById('followup');
+        const defaultFollowup = new Date();
+        defaultFollowup.setDate(defaultFollowup.getDate() + 30);
+        followupInput.value = defaultFollowup.toISOString().split('T')[0];
+    </script>
+</body>
+</html>
