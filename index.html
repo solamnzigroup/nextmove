@@ -17,6 +17,7 @@
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
@@ -27,13 +28,28 @@
             --gray-500: #6b7280;
             --gray-700: #374151;
             --gray-900: #111827;
+            --bg: var(--gray-50);
+            --card-bg: white;
+            --text: var(--gray-900);
+            --text-muted: var(--gray-500);
+        }
+        
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --gray-100: #334155;
+            --gray-200: #475569;
+            --gray-700: #cbd5e1;
         }
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--gray-50);
-            color: var(--gray-900);
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
         }
         
         .app {
@@ -47,6 +63,7 @@
         header {
             text-align: center;
             padding: 40px 0;
+            position: relative;
         }
         
         .logo {
@@ -57,8 +74,30 @@
         }
         
         .tagline {
-            color: var(--gray-500);
+            color: var(--text-muted);
             font-size: 1.1rem;
+        }
+        
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 0;
+            background: var(--card-bg);
+            border: 2px solid var(--gray-200);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .theme-toggle:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
         }
         
         /* Navigation Tabs */
@@ -66,7 +105,7 @@
             display: flex;
             gap: 8px;
             margin-bottom: 30px;
-            background: white;
+            background: var(--card-bg);
             padding: 8px;
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -81,7 +120,7 @@
             cursor: pointer;
             font-size: 0.95rem;
             font-weight: 500;
-            color: var(--gray-500);
+            color: var(--text-muted);
             transition: all 0.2s;
         }
         
@@ -96,7 +135,7 @@
         
         /* Card */
         .card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 16px;
             padding: 30px;
             margin-bottom: 20px;
@@ -106,7 +145,7 @@
         .card h2 {
             font-size: 1.25rem;
             margin-bottom: 20px;
-            color: var(--gray-900);
+            color: var(--text);
         }
         
         /* Form */
@@ -129,6 +168,8 @@
             font-size: 1rem;
             font-family: inherit;
             transition: border-color 0.2s;
+            background: var(--card-bg);
+            color: var(--text);
         }
         
         input:focus, textarea:focus, select:focus {
@@ -218,6 +259,46 @@
             color: white;
         }
         
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+        
+        /* Search & Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-input input {
+            padding-left: 40px;
+        }
+        
+        .search-input::before {
+            content: '🔍';
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+        }
+        
+        .filter-select {
+            min-width: 140px;
+        }
+        
+        .filter-select select {
+            padding: 10px 14px;
+        }
+        
         /* Decision List */
         .decision-list {
             display: flex;
@@ -226,7 +307,7 @@
         }
         
         .decision-item {
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -249,16 +330,16 @@
         .decision-title {
             font-weight: 600;
             font-size: 1.1rem;
-            color: var(--gray-900);
+            color: var(--text);
         }
         
         .decision-date {
             font-size: 0.85rem;
-            color: var(--gray-500);
+            color: var(--text-muted);
         }
         
         .decision-preview {
-            color: var(--gray-500);
+            color: var(--text-muted);
             font-size: 0.95rem;
             margin-bottom: 12px;
         }
@@ -267,13 +348,14 @@
             display: flex;
             gap: 16px;
             font-size: 0.85rem;
+            flex-wrap: wrap;
         }
         
         .meta-item {
             display: flex;
             align-items: center;
             gap: 6px;
-            color: var(--gray-500);
+            color: var(--text-muted);
         }
         
         .confidence-badge {
@@ -287,6 +369,10 @@
         .confidence-medium { background: #fef3c7; color: #92400e; }
         .confidence-low { background: #fee2e2; color: #991b1b; }
         
+        [data-theme="dark"] .confidence-high { background: #166534; color: #dcfce7; }
+        [data-theme="dark"] .confidence-medium { background: #92400e; color: #fef3c7; }
+        [data-theme="dark"] .confidence-low { background: #991b1b; color: #fee2e2; }
+        
         .status-badge {
             padding: 4px 10px;
             border-radius: 20px;
@@ -299,11 +385,15 @@
         .status-bad { background: #fee2e2; color: #991b1b; }
         .status-mixed { background: #fef3c7; color: #92400e; }
         
+        [data-theme="dark"] .status-good { background: #166534; color: #dcfce7; }
+        [data-theme="dark"] .status-bad { background: #991b1b; color: #fee2e2; }
+        [data-theme="dark"] .status-mixed { background: #92400e; color: #fef3c7; }
+        
         /* Empty State */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: var(--gray-500);
+            color: var(--text-muted);
         }
         
         .empty-state-icon {
@@ -326,7 +416,7 @@
         }
         
         .stat-card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 20px;
             text-align: center;
@@ -341,8 +431,109 @@
         
         .stat-label {
             font-size: 0.85rem;
-            color: var(--gray-500);
+            color: var(--text-muted);
             margin-top: 4px;
+        }
+        
+        /* Charts */
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+        
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .bar-label {
+            width: 100px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: right;
+        }
+        
+        .bar-track {
+            flex: 1;
+            height: 24px;
+            background: var(--gray-100);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            min-width: 30px;
+            transition: width 0.5s ease;
+        }
+        
+        .bar-value {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        /* Calibration Chart */
+        .calibration-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+        
+        .calibration-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .calibration-cell .conf-level {
+            font-size: 0.65rem;
+            opacity: 0.8;
+        }
+        
+        /* Export/Import */
+        .data-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        .data-actions .btn {
+            flex: 1;
+        }
+        
+        #importInput {
+            display: none;
         }
         
         /* Modal */
@@ -365,7 +556,7 @@
         }
         
         .modal {
-            background: white;
+            background: var(--card-bg);
             border-radius: 16px;
             padding: 30px;
             max-width: 500px;
@@ -386,7 +577,7 @@
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: var(--gray-500);
+            color: var(--text-muted);
         }
         
         /* Section */
@@ -417,7 +608,7 @@
         .detail-label {
             font-size: 0.85rem;
             font-weight: 600;
-            color: var(--gray-500);
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 8px;
@@ -458,6 +649,76 @@
             line-height: 1.6;
         }
         
+        /* Results count */
+        .results-count {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+        
+        /* Tags */
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px;
+            border: 2px solid var(--gray-200);
+            border-radius: 10px;
+            background: var(--card-bg);
+            min-height: 48px;
+            align-items: center;
+        }
+        
+        .tags-input:focus-within {
+            border-color: var(--primary);
+        }
+        
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: var(--primary);
+            color: white;
+            border-radius: 16px;
+            font-size: 0.85rem;
+        }
+        
+        .tag-remove {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+            opacity: 0.8;
+        }
+        
+        .tag-remove:hover {
+            opacity: 1;
+        }
+        
+        .tag-input-field {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 0.95rem;
+            flex: 1;
+            min-width: 100px;
+            color: var(--text);
+        }
+        
+        .tag-display {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            background: var(--gray-100);
+            color: var(--text-muted);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-right: 4px;
+        }
+        
         /* Responsive */
         @media (max-width: 600px) {
             .tabs {
@@ -471,12 +732,21 @@
             .outcome-buttons {
                 flex-direction: column;
             }
+            
+            .filter-bar {
+                flex-direction: column;
+            }
+            
+            .data-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <div class="app">
         <header>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
             <div class="logo">NextMove</div>
             <p class="tagline">Track decisions. Learn from outcomes. Decide better.</p>
         </header>
@@ -484,7 +754,7 @@
         <div class="tabs">
             <button class="tab active" onclick="showSection('new')">+ New Decision</button>
             <button class="tab" onclick="showSection('history')">📋 History</button>
-            <button class="tab" onclick="showSection('insights')">💡 Insights</button>
+            <button class="tab" onclick="showSection('insights')">📊 Insights</button>
         </div>
         
         <!-- New Decision Section -->
@@ -534,6 +804,14 @@
                     </div>
                     
                     <div class="form-group">
+                        <label>Tags (press Enter to add)</label>
+                        <div class="tags-input" id="tagsContainer">
+                            <input type="text" class="tag-input-field" id="tagInput" placeholder="Add tags...">
+                        </div>
+                        <input type="hidden" id="tags" value="[]">
+                    </div>
+                    
+                    <div class="form-group">
                         <label for="followup">Follow-up date (to review outcome)</label>
                         <input type="date" id="followup">
                     </div>
@@ -545,8 +823,44 @@
         
         <!-- History Section -->
         <div id="history" class="section">
+            <div class="filter-bar">
+                <div class="search-input">
+                    <input type="text" id="searchInput" placeholder="Search decisions...">
+                </div>
+                <div class="filter-select">
+                    <select id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="business">💼 Business</option>
+                        <option value="career">🎯 Career</option>
+                        <option value="personal">🏠 Personal</option>
+                        <option value="financial">💰 Financial</option>
+                        <option value="health">🏃 Health</option>
+                        <option value="relationships">❤️ Relationships</option>
+                        <option value="other">📌 Other</option>
+                    </select>
+                </div>
+                <div class="filter-select">
+                    <select id="outcomeFilter">
+                        <option value="all">All Outcomes</option>
+                        <option value="pending">⏳ Pending</option>
+                        <option value="good">👍 Good</option>
+                        <option value="mixed">🤷 Mixed</option>
+                        <option value="bad">👎 Bad</option>
+                    </select>
+                </div>
+            </div>
+            <div class="results-count" id="resultsCount"></div>
             <div class="decision-list" id="decisionList">
                 <!-- Populated by JS -->
+            </div>
+            
+            <div class="data-actions">
+                <button class="btn btn-secondary" onclick="exportData()">📤 Export JSON</button>
+                <button class="btn btn-secondary" onclick="exportCSV()">📄 Export CSV</button>
+                <label class="btn btn-secondary" style="cursor: pointer;">
+                    📥 Import
+                    <input type="file" id="importInput" accept=".json" onchange="importData(event)">
+                </label>
             </div>
         </div>
         
@@ -554,6 +868,21 @@
         <div id="insights" class="section">
             <div class="stats-grid" id="statsGrid">
                 <!-- Populated by JS -->
+            </div>
+            
+            <!-- Category Chart -->
+            <div class="chart-container" id="categoryChart">
+                <h3 class="chart-title">Decisions by Category</h3>
+                <div class="bar-chart" id="categoryBars"></div>
+            </div>
+            
+            <!-- Confidence Calibration -->
+            <div class="chart-container" id="calibrationChart">
+                <h3 class="chart-title">Confidence Calibration</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+                    How accurate is your confidence? Green = good outcomes match confidence level.
+                </p>
+                <div class="calibration-grid" id="calibrationGrid"></div>
             </div>
             
             <div id="insightCards">
@@ -578,9 +907,60 @@
     <script>
         // Data Management
         let decisions = JSON.parse(localStorage.getItem('nextmove_decisions') || '[]');
+        let currentTags = [];
         
         function saveDecisions() {
             localStorage.setItem('nextmove_decisions', JSON.stringify(decisions));
+        }
+        
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('nextmove_theme', newTheme);
+            document.querySelector('.theme-toggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('nextmove_theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+        document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        
+        // Tags functionality
+        const tagInput = document.getElementById('tagInput');
+        const tagsContainer = document.getElementById('tagsContainer');
+        
+        tagInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const value = this.value.trim().toLowerCase();
+                if (value && !currentTags.includes(value)) {
+                    currentTags.push(value);
+                    renderTags();
+                }
+                this.value = '';
+            }
+        });
+        
+        function renderTags() {
+            const existingTags = tagsContainer.querySelectorAll('.tag');
+            existingTags.forEach(t => t.remove());
+            
+            currentTags.forEach((tag, index) => {
+                const tagEl = document.createElement('span');
+                tagEl.className = 'tag';
+                tagEl.innerHTML = `${tag} <button type="button" class="tag-remove" onclick="removeTag(${index})">&times;</button>`;
+                tagsContainer.insertBefore(tagEl, tagInput);
+            });
+            
+            document.getElementById('tags').value = JSON.stringify(currentTags);
+        }
+        
+        function removeTag(index) {
+            currentTags.splice(index, 1);
+            renderTags();
         }
         
         // UI Functions
@@ -612,6 +992,7 @@
                 expected: document.getElementById('expected').value,
                 confidence: parseInt(document.getElementById('confidence').value),
                 category: document.getElementById('category').value,
+                tags: [...currentTags],
                 followup: document.getElementById('followup').value,
                 createdAt: new Date().toISOString(),
                 outcome: null,
@@ -626,27 +1007,65 @@
             this.reset();
             document.getElementById('confidence').value = 5;
             document.getElementById('confidenceValue').textContent = '5';
+            currentTags = [];
+            renderTags();
+            
+            // Reset follow-up date
+            const defaultFollowup = new Date();
+            defaultFollowup.setDate(defaultFollowup.getDate() + 30);
+            document.getElementById('followup').value = defaultFollowup.toISOString().split('T')[0];
             
             // Show success
             alert('Decision logged! 🎉');
         });
         
+        // Filter listeners
+        document.getElementById('searchInput').addEventListener('input', renderHistory);
+        document.getElementById('categoryFilter').addEventListener('change', renderHistory);
+        document.getElementById('outcomeFilter').addEventListener('change', renderHistory);
+        
         // Render History
         function renderHistory() {
             const container = document.getElementById('decisionList');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const outcomeFilter = document.getElementById('outcomeFilter').value;
             
-            if (decisions.length === 0) {
+            let filtered = decisions.filter(d => {
+                // Search filter
+                const matchesSearch = !searchTerm || 
+                    d.title.toLowerCase().includes(searchTerm) ||
+                    d.reasoning.toLowerCase().includes(searchTerm) ||
+                    (d.context && d.context.toLowerCase().includes(searchTerm)) ||
+                    (d.tags && d.tags.some(t => t.includes(searchTerm)));
+                
+                // Category filter
+                const matchesCategory = categoryFilter === 'all' || d.category === categoryFilter;
+                
+                // Outcome filter
+                const matchesOutcome = outcomeFilter === 'all' || 
+                    (outcomeFilter === 'pending' && !d.outcome) ||
+                    d.outcome === outcomeFilter;
+                
+                return matchesSearch && matchesCategory && matchesOutcome;
+            });
+            
+            // Update results count
+            document.getElementById('resultsCount').textContent = 
+                `Showing ${filtered.length} of ${decisions.length} decisions`;
+            
+            if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📝</div>
-                        <h3>No decisions yet</h3>
-                        <p>Start logging your decisions to track and learn from them.</p>
+                        <h3>${decisions.length === 0 ? 'No decisions yet' : 'No matching decisions'}</h3>
+                        <p>${decisions.length === 0 ? 'Start logging your decisions to track and learn from them.' : 'Try adjusting your search or filters.'}</p>
                     </div>
                 `;
                 return;
             }
             
-            container.innerHTML = decisions.map(d => {
+            container.innerHTML = filtered.map(d => {
                 const date = new Date(d.createdAt).toLocaleDateString('en-US', { 
                     month: 'short', day: 'numeric', year: 'numeric' 
                 });
@@ -660,6 +1079,10 @@
                     financial: '💰', health: '🏃', relationships: '❤️', other: '📌'
                 };
                 
+                const tagsHtml = d.tags && d.tags.length > 0 
+                    ? d.tags.map(t => `<span class="tag-display">#${t}</span>`).join('') 
+                    : '';
+                
                 return `
                     <div class="decision-item" onclick="showDecision(${d.id})">
                         <div class="decision-header">
@@ -667,6 +1090,7 @@
                             <span class="decision-date">${date}</span>
                         </div>
                         <p class="decision-preview">${d.reasoning.substring(0, 100)}${d.reasoning.length > 100 ? '...' : ''}</p>
+                        ${tagsHtml ? `<div style="margin-bottom: 12px">${tagsHtml}</div>` : ''}
                         <div class="decision-meta">
                             <span class="meta-item">${categoryEmoji[d.category] || '📌'} ${d.category}</span>
                             <span class="confidence-badge confidence-${confidenceClass}">${d.confidence}/10 confident</span>
@@ -687,6 +1111,13 @@
             const date = new Date(d.createdAt).toLocaleDateString('en-US', { 
                 month: 'long', day: 'numeric', year: 'numeric' 
             });
+            
+            const tagsHtml = d.tags && d.tags.length > 0 
+                ? `<div class="detail-section">
+                    <div class="detail-label">Tags</div>
+                    <div class="detail-content">${d.tags.map(t => `<span class="tag-display">#${t}</span>`).join(' ')}</div>
+                   </div>` 
+                : '';
             
             let outcomeHtml = '';
             if (d.outcome) {
@@ -743,6 +1174,8 @@
                     <div class="detail-content">${d.confidence}/10</div>
                 </div>
                 
+                ${tagsHtml}
+                
                 ${outcomeHtml}
                 
                 <button class="btn btn-secondary" onclick="deleteDecision(${id})" style="margin-top: 20px; width: 100%;">🗑️ Delete Decision</button>
@@ -776,6 +1209,88 @@
             renderHistory();
         }
         
+        // Export/Import
+        function exportData() {
+            const data = {
+                version: '1.0',
+                exportDate: new Date().toISOString(),
+                decisions: decisions
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `nextmove-export-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function exportCSV() {
+            const headers = ['ID', 'Title', 'Context', 'Reasoning', 'Expected', 'Confidence', 'Category', 'Tags', 'Follow-up', 'Created', 'Outcome', 'Outcome Notes', 'Outcome Date'];
+            const rows = decisions.map(d => [
+                d.id,
+                `"${(d.title || '').replace(/"/g, '""')}"`,
+                `"${(d.context || '').replace(/"/g, '""')}"`,
+                `"${(d.reasoning || '').replace(/"/g, '""')}"`,
+                `"${(d.expected || '').replace(/"/g, '""')}"`,
+                d.confidence,
+                d.category,
+                `"${(d.tags || []).join(', ')}"`,
+                d.followup || '',
+                d.createdAt,
+                d.outcome || '',
+                `"${(d.outcomeNotes || '').replace(/"/g, '""')}"`,
+                d.outcomeDate || ''
+            ]);
+            
+            const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `nextmove-export-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    const importedDecisions = data.decisions || data;
+                    
+                    if (!Array.isArray(importedDecisions)) {
+                        throw new Error('Invalid format');
+                    }
+                    
+                    const count = importedDecisions.length;
+                    const merge = confirm(`Import ${count} decisions?\n\nClick OK to merge with existing decisions.\nClick Cancel to replace all decisions.`);
+                    
+                    if (merge) {
+                        // Merge, avoiding duplicates by ID
+                        const existingIds = new Set(decisions.map(d => d.id));
+                        const newDecisions = importedDecisions.filter(d => !existingIds.has(d.id));
+                        decisions = [...newDecisions, ...decisions];
+                    } else {
+                        decisions = importedDecisions;
+                    }
+                    
+                    saveDecisions();
+                    renderHistory();
+                    alert(`Successfully imported ${count} decisions!`);
+                } catch (err) {
+                    alert('Error importing file. Please check the format.');
+                    console.error(err);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset input
+        }
+        
         // Render Insights
         function renderInsights() {
             const total = decisions.length;
@@ -806,6 +1321,12 @@
                     <div class="stat-label">Good Outcomes</div>
                 </div>
             `;
+            
+            // Category bar chart
+            renderCategoryChart();
+            
+            // Calibration grid
+            renderCalibrationChart();
             
             // Generate insights
             let insights = [];
@@ -843,7 +1364,7 @@
                         if (highConfRate > lowConfRate + 20) {
                             insights.push({
                                 title: '🎯 Trust Your Gut',
-                                text: `When you\'re confident (7+), ${highConfRate}% of decisions turn out good vs ${lowConfRate}% when you\'re less sure. Your instincts seem calibrated!`
+                                text: `When you're confident (7+), ${highConfRate}% of decisions turn out good vs ${lowConfRate}% when you're less sure. Your instincts seem calibrated!`
                             });
                         } else if (lowConfRate > highConfRate) {
                             insights.push({
@@ -865,6 +1386,22 @@
                         text: `You have ${pendingFollowups} decision${pendingFollowups > 1 ? 's' : ''} past their follow-up date. Review them to complete the learning loop!`
                     });
                 }
+                
+                // Tag analysis
+                if (total >= 5) {
+                    const allTags = decisions.flatMap(d => d.tags || []);
+                    if (allTags.length > 0) {
+                        const tagCounts = {};
+                        allTags.forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1);
+                        const topTag = Object.entries(tagCounts).sort((a, b) => b[1] - a[1])[0];
+                        if (topTag[1] >= 3) {
+                            insights.push({
+                                title: '🏷️ Common Theme',
+                                text: `"#${topTag[0]}" appears in ${topTag[1]} decisions. This might be a recurring area worth extra attention.`
+                            });
+                        }
+                    }
+                }
             }
             
             document.getElementById('insightCards').innerHTML = insights.map(i => `
@@ -875,9 +1412,106 @@
             `).join('');
         }
         
+        function renderCategoryChart() {
+            const container = document.getElementById('categoryBars');
+            
+            if (decisions.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No data yet</p>';
+                return;
+            }
+            
+            const categories = {};
+            const categoryEmoji = {
+                business: '💼', career: '🎯', personal: '🏠', 
+                financial: '💰', health: '🏃', relationships: '❤️', other: '📌'
+            };
+            
+            decisions.forEach(d => {
+                categories[d.category] = (categories[d.category] || 0) + 1;
+            });
+            
+            const sorted = Object.entries(categories).sort((a, b) => b[1] - a[1]);
+            const max = sorted[0][1];
+            
+            container.innerHTML = sorted.map(([cat, count]) => `
+                <div class="bar-row">
+                    <span class="bar-label">${categoryEmoji[cat] || ''} ${cat}</span>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width: ${(count / max) * 100}%">
+                            <span class="bar-value">${count}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function renderCalibrationChart() {
+            const container = document.getElementById('calibrationGrid');
+            
+            const withOutcome = decisions.filter(d => d.outcome);
+            
+            if (withOutcome.length < 3) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: span 5;">Need at least 3 outcomes to show calibration</p>';
+                return;
+            }
+            
+            // Group by confidence ranges: 1-2, 3-4, 5-6, 7-8, 9-10
+            const ranges = [
+                { label: '1-2', min: 1, max: 2 },
+                { label: '3-4', min: 3, max: 4 },
+                { label: '5-6', min: 5, max: 6 },
+                { label: '7-8', min: 7, max: 8 },
+                { label: '9-10', min: 9, max: 10 }
+            ];
+            
+            container.innerHTML = ranges.map(range => {
+                const inRange = withOutcome.filter(d => d.confidence >= range.min && d.confidence <= range.max);
+                const goodCount = inRange.filter(d => d.outcome === 'good').length;
+                const total = inRange.length;
+                const rate = total > 0 ? Math.round((goodCount / total) * 100) : null;
+                
+                let bgColor = 'var(--gray-100)';
+                let textColor = 'var(--text-muted)';
+                
+                if (rate !== null) {
+                    // Expected rate based on confidence
+                    const expectedRate = ((range.min + range.max) / 2) * 10;
+                    const diff = Math.abs(rate - expectedRate);
+                    
+                    if (diff <= 15) {
+                        bgColor = '#dcfce7';
+                        textColor = '#166534';
+                    } else if (diff <= 30) {
+                        bgColor = '#fef3c7';
+                        textColor = '#92400e';
+                    } else {
+                        bgColor = '#fee2e2';
+                        textColor = '#991b1b';
+                    }
+                }
+                
+                return `
+                    <div class="calibration-cell" style="background: ${bgColor}; color: ${textColor}">
+                        <span class="conf-level">${range.label}</span>
+                        <span>${rate !== null ? rate + '%' : '—'}</span>
+                        <span class="conf-level">(${total})</span>
+                    </div>
+                `;
+            }).join('');
+        }
+        
         // Close modal on overlay click
         document.getElementById('detailModal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'n' && e.ctrlKey) {
+                e.preventDefault();
+                showSection('new');
+            }
         });
         
         // Set default follow-up date to 30 days from now
